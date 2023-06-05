@@ -26,6 +26,8 @@ rm(subset_data_kidpan)
 
 # setting datatypes and combining factor levels
 subset_data_kidney$AGE <- as.numeric(subset_data_kidney$AGE)
+# make age null for children
+subset_data_kidney$AGE[subset_data_kidney$AGE < 18] <- "NA"
 
 # making blood type only A, B, AB, O
 subset_data_kidney$ABO[subset_data_kidney$ABO == 'A1'] <- "A"

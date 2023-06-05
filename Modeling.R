@@ -61,6 +61,26 @@ pairs(emmeans(model3, ~ABO, type = "response"))
 pairs(emmeans(model3, ~ETHCAT_1, type = "response"))
 pairs(emmeans(model3, ~EDUCATION_1, type = "response"))
 
+# plot of odds
+or <- exp(coef(model3))
+ci <- exp(confint(model3))
+
+# Create a data frame
+data <- data.frame(predictor = names(or), odds_ratio = or, lower_ci = ci[,1], upper_ci = ci[,2])
+color <- c("(Intercept)" = "#009E73", "AB" = "#0072B2", "B" = "#0072B2", "O" = "#0072B2",
+           "BLACK" = "#D55E00", "HISPANIC" = "#D55E00", "ASIAN" = "#D55E00", "OTHER" = "#D55E00",
+           "ADV" = "#CC79A7", "ND" = "#CC79A7", "SC" = "#CC79A7")
+
+data$category <- c("(Intercept)", "ABO", "ABO", "ABO", "ETHNICITY", "ETHNICITY", 
+                   "ETHNICITY", "ETHNICITY", "EDUCATION", "EDUCATION", "EDUCATION")
+# Plot the odds ratios
+ggplot(data, aes(x = predictor, y = odds_ratio, ymin = lower_ci, ymax = upper_ci, color = category)) +
+  geom_pointrange(alpha = 0.5) +
+  scale_color_manual(values = cbp4, name = "PREDICTOR") +
+  xlab("PREDICTOR LEVELS") +
+  geom_hline(yintercept = 1.0, lwd = 1, colour = "#F0E442", alpha = 0.5) +
+  ylab("ODDS RATIO")
+
 # poisson regression
 model8 <- glm(floor(WAIT_TIME) ~ ABO + ETHCAT_1 + EDUCATION_1 + GENDER + AGE, 
               data = train, na.action = na.omit, family = "poisson")
